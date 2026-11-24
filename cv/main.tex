@@ -1,0 +1,705 @@
+\documentclass[10pt, letterpaper]{article}
+
+
+\usepackage[utf8]{inputenc}  % ← XeLaTeX/LuaLaTeX에서는 삭제
+\usepackage[
+  backend=biber,
+  style=numeric,
+  sorting=ddnt,
+  maxnames=99,
+  defernumbers=true
+]{biblatex}
+
+\DeclareSortingTemplate{ddnt}{
+  \sort[direction=descending]{\field{sortkey}} % YYYYMM 문자열로 강제 정렬
+  \sort{\field{author}}
+  \sort{\field{title}}
+}
+
+
+
+
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=2 cm, % seperation between body and page edge from the top
+    bottom=2 cm, % seperation between body and page edge from the bottom
+    left=2 cm, % seperation between body and page edge from the left
+    right=2 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging 
+]{geometry} % for adjusting page geometry
+\usepackage{titlesec} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{primaryColor}{RGB}{0, 79, 144} % define primary color
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{amsmath} % for math
+\usepackage[
+    pdftitle={Seungyub Han's CV},
+    pdfauthor={Seungyub Han},
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref} % for links, metadata and bookmarks
+\usepackage[pscoord]{eso-pic} % for floating text on the page
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
+% \usepackage[backend=biber, style=numeric, sorting=ydnt, maxnames=99,minnames=1,defernumbers=true]{biblatex}
+
+
+
+
+\usepackage{xcolor}
+% \usepackage{etoolbox}
+% \usepackage{ifthen}
+% \usepackage{enumitem}
+\usepackage{datetime} % for formatting month+year
+\addbibresource{pub_with_sortkey.bib}
+
+% ------------------------------------------------------------------------
+% 필드 출력 제거 및 포맷 정리
+\DeclareFieldFormat{booktitle}{\textnormal{#1}}   % 학회명
+\DeclareFieldFormat{journal}{\textnormal{#1}}     % 저널명
+\DeclareFieldFormat{title}{\mkbibemph{#1}}    % 제목 이탤릭
+\DeclareFieldFormat{notitlequote}{#1}
+% \renewbibmacro*{title}{%
+%   \printfield[title]{title}%
+%   \newunit%
+% }
+% \DeclareFieldFormat{title}{\textit{#1}}
+\renewbibmacro{in:}{}                         % "In:" 제거
+\renewbibmacro*{note+pages}{\printfield{pages}} % note 중복 제거
+
+% ------------------------------------------------------------------------
+% note 필드 스타일 지정: (Spotlight), (Oral), etc.
+\newbibmacro*{customnote}{%
+  \iffieldundef{note}
+    {}
+    {\space\textbf{(\printfield{note})}}%
+}
+
+\newbibmacro*{customtitle}{%
+  \iffieldundef{title}
+    {}
+    {\textit{\printfield[notitlequote]{title}}}%
+}
+
+
+% ------------------------------------------------------------------------
+% % 커스텀 entry 출력 방식: begentry에서 직접 정의
+% \renewbibmacro*{begentry}{%
+%   \printnames{author}\\
+%   \printfield{title}\\
+%   \ifentrytype{inproceedings}{%
+%     \printfield{booktitle}%
+%   }{%
+%     \printfield{journal}%
+%   }%
+%   \space
+%   \printfield{year}%
+%   \usebibmacro{customnote}\\
+% }
+
+% \renewbibmacro*{finentry}{} % 기본 출력 후처리 제거
+% 완전히 사용자 정의된 출력 형식
+\DeclareBibliographyDriver{inproceedings}{%
+  \printnames{author}\\
+  \usebibmacro{customtitle}\\
+  \printfield{booktitle}%
+  \space
+  \printfield{year}%
+  \usebibmacro{customnote}%
+  \finentry%
+}
+
+\DeclareBibliographyDriver{article}{%
+  \printnames{author}\\
+  \usebibmacro{customtitle}\\
+  \printfield{journaltitle}%
+  \space
+  \printfield{year}%
+  \usebibmacro{customnote}%
+  \finentry%
+}
+
+% ------------------------------------------------------------------------
+
+
+\defbibcheck{annoteconf}{\iffieldequalstr{keywords}{conf}{}{\skipentry}}
+\defbibcheck{annotework}{\iffieldequalstr{keywords}{workshop}{}{\skipentry}}
+\defbibcheck{annotejournal}{\iffieldequalstr{keywords}{journal}{}{\skipentry}}
+\defbibcheck{annotepreprint}{\iffieldequalstr{keywords}{preprint}{}{\skipentry}}
+
+
+
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    % \usepackage[T1]{fontenc} % this breaks sb2nov
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+
+
+% Some settings:
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\pagestyle{empty} % no header or footer
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0cm} % set column seperation
+\makeatletter
+\let\ps@customFooterStyle\ps@plain % Copy the plain style to customFooterStyle
+\patchcmd{\ps@customFooterStyle}{\thepage}{
+    \color{gray}\textit{\small Seungyub Han - Page \thepage{} of \pageref*{LastPage}}
+}{}{} % replace number by desired string
+\makeatother
+\pagestyle{customFooterStyle}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    % left space:
+    -1pt
+}{
+    % top space:
+    0.3 cm
+}{
+    % bottom space:
+    0.2 cm
+} % section title spacing
+
+\renewcommand\labelitemi{$\circ$} % custom bullet points
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0.2 cm + 0.00001 cm
+    }{
+        0.2 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+} % new environment for the header
+
+% \newcommand{\placelastupdatedtext}{% \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+%   \AddToShipoutPictureFG*{% Add <stuff> to current page foreground
+%     \put(
+%         \LenToUnit{\paperwidth-2 cm-0.2 cm+0.05cm},
+%         \LenToUnit{\paperheight-1.0 cm}
+%     ){\vtop{{\null}\makebox[0pt][c]{
+%         \small\color{gray}\textit{Last updated in September 2024}\hspace{\widthof{Last updated in September 2024}}
+%     }}}%
+%   }%
+% }%
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+
+
+% % Dummy twocolentry / onecolentry for this demo
+% \newenvironment{twocolentry}[1]{\par\noindent\textbf{#1}\hfill\begin{minipage}[t]{0.8\linewidth}}{\end{minipage}\par}
+% \newenvironment{onecolentry}{\par\noindent\begin{minipage}[t]{\linewidth}\small\itshape}{\end{minipage}\par}
+
+% % Custom command to format one entry
+% \newcommand{\printcustompub}[1]{%
+%   \defbibentryset{#1set}{#1}%
+%   \begin{samepage}
+%     \begin{twocolentry}{%
+%       \printfield[date]{year}%
+%     }
+%       \textbf{\printfield{title}}
+
+%       \vspace{0.1cm}
+
+%       \printnames{author}%
+%     \end{twocolentry}
+
+%     \vspace{0.1cm}
+
+%     \begin{onecolentry}
+%       \iffieldundef{doi}{}{%
+%         \href{https://doi.org/\thefield{doi}}{\thefield{doi}}%
+%       }
+%     \end{onecolentry}
+%   \end{samepage}
+% }
+
+% % Print all entries
+% \newcommand{\printallcustompubs}{%
+%   \forentry{article}{%
+%     \printcustompub{\thefield{entrykey}}%
+%     \medskip
+%   }%
+% }
+
+
+
+
+
+
+
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
+
+    % \placelastupdatedtext
+    \begin{header}
+        \textbf{\fontsize{24 pt}{24 pt}\selectfont Seungyub Han}
+
+        \vspace{0.3 cm}
+
+        \normalsize
+        % \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}Your Location}%
+        % \kern 0.25 cm%
+        % \AND%
+        % \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{mailto:seungyubhan@snu.ac.kr}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}seungyubhan@snu.ac.kr}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://seungyubhan.github.io/}{\color{black}{\footnotesize\faLink}\hspace*{0.13cm}seungyubhan.github.io}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://linkedin.com/in/seungyubhan}{\color{black}{\footnotesize\faLinkedinIn}\hspace*{0.13cm}seungyubhan}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://github.com/seungyubhan}{\color{black}{\footnotesize\faGithub}\hspace*{0.13cm}seungyubhan}}%
+    \end{header}
+
+    \vspace{0.3 cm - 0.3 cm}
+
+
+
+    \section{Education}
+
+        \begin{twocolentry}{
+            
+            
+        \textit{Mar. 2016 – }}
+            \textbf{Seoul National University}
+
+            \textit{Ph. D. Student in Electrical and Computer Engineering}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Partial leave of absence to working at Hodoo AI: 2019 - 2023 (5 years)
+            \end{highlights}
+        \end{onecolentry}
+
+
+
+        
+        \begin{twocolentry}{
+            
+            
+        \textit{Mar. 2010 – Feb. 2016}}
+            \textbf{Seoul National University}
+
+            \textit{B.S. in Electrical and Computer Engineering}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Leave of absence for military service: Feb. 2012 - Feb. 2014 (2 years)
+            \end{highlights}
+        \end{onecolentry}
+
+
+        \section{Research Interest}
+
+        
+        \begin{onecolentry}
+            Reinforcement Learning, Robot Learning, Continual Learning, Non-convex Optimization
+        \end{onecolentry}
+
+
+
+    
+    \section{Work Experience}
+
+
+
+        
+        \begin{twocolentry}{
+        \textit{Seoul, Korea}    
+            
+        \textit{2019 - 2023}}
+            \textbf{Research Engineer}
+            
+            \textit{Hodoo AI}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Spin-off startup founded by my advisor, Jungwoo Lee
+                \item Developed Hodoo AI Medical Imaging (HAIMED) service: continual learning framework for MR brain metastasis diagnostics
+                \item Collaborated with Seoul National University Hospital
+            \end{highlights}
+        \end{onecolentry}
+
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+        \textit{Seoul, Korea}    
+            
+        \textit{Mar. 2016 - Aug. 2016}}
+            \textbf{Research Intern}
+            
+            \textit{Wanderlust Inc.}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Developed photo recommendation system by instance segmentation and matrix factorization
+            \end{highlights}
+        \end{onecolentry}
+
+
+
+    
+    \section{Publications}
+
+    \nocite{*}
+    % \printbibliography
+% \printbibliography[heading=none,resetnumbers=true]
+    % \begin{twocolentry}{        
+    %     \textit{(*: equal contribution)}}
+    %     \textbf{Conference}
+    % \end{twocolentry}
+    % \vspace{-5pt}
+    \vspace{5pt}
+    \begin{onecolentry}
+        \hspace{-5pt}\textbf{Conference Papers} \hspace{5pt} \textit{(*: equal contribution)}
+    \end{onecolentry}
+    \vspace{-5pt}
+    
+    % \printbibliography[heading=none,check=annoteconf,resetnumbers=true,sorting=ddnt]
+\begin{refcontext}[sorting=ddnt]
+\printbibliography[
+  heading=none,
+  check=annoteconf,
+  resetnumbers=true
+]
+\end{refcontext}
+
+
+
+    \begin{onecolentry}
+        \hspace{-5pt}\textbf{Journal Papers} \hspace{5pt} \textit{(*: equal contribution)}
+    \end{onecolentry}
+    \vspace{-5pt}
+
+
+    \printbibliography[heading=none,check=annotejournal,resetnumbers=true]
+
+\begin{onecolentry}
+    \hspace{-5pt}\textbf{Workshop} \hspace{5pt} \textit{(*: equal contribution)}
+\end{onecolentry}
+\vspace{-5pt}
+
+    % \printbibliography[heading=none,check=annoteconf,resetnumbers=true,sorting=ddnt]
+\begin{refcontext}[sorting=ddnt]
+\printbibliography[
+  heading=none,
+  check=annotework,
+  resetnumbers=true
+]
+\end{refcontext}
+
+
+
+
+    \begin{onecolentry}
+        \hspace{-5pt}\textbf{Preprints} \hspace{5pt} \textit{(*: equal contribution)}
+    \end{onecolentry}
+    \vspace{-5pt}
+
+
+    \printbibliography[heading=none,check=annotepreprint,resetnumbers=true]
+
+% %%%%%%%%%%%%%%%%%%    
+% \section{Projects}
+% %%%%%%%%%%%%%%%%%%%
+
+% \begin{twocolentry}{
+    
+    
+% \textit{NRF Korea}}
+%     \textbf{Robot learning systems with learning by asking based on long-horizon reinforcement learning}
+% \end{twocolentry}
+
+% \vspace{0.10 cm}
+% \begin{twocolentry}{
+%     {2024 - }} Research Assistant at Seoul National University
+% \end{twocolentry}
+
+
+% \vspace{0.2 cm}
+
+% \begin{twocolentry}{
+    
+    
+% \textit{Hanwha Systems}}
+%     \textbf{Research for role diversification of heterogeneous multi-agent systems}
+% \end{twocolentry}
+
+% \vspace{0.10 cm}
+% \begin{twocolentry}{
+%     {2024 - }} Research Assistant at Seoul National University
+% \end{twocolentry}
+
+
+% \vspace{0.2 cm}
+
+% \begin{twocolentry}{
+    
+    
+% \textit{NRF Korea}}
+%     \textbf{Robot learning systems with learning by asking based on long-horizon reinforcement learning}
+% \end{twocolentry}
+
+% \vspace{0.10 cm}
+% \begin{twocolentry}{
+%     {2024 - }} Research Assistant at Seoul National University
+% \end{twocolentry}
+
+
+% \vspace{0.2 cm}
+
+% \begin{twocolentry}{
+    
+    
+% \textit{NRF Korea}}
+%     \textbf{Robot learning systems with learning by asking based on long-horizon reinforcement learning}
+% \end{twocolentry}
+
+% \vspace{0.10 cm}
+% \begin{twocolentry}{
+%     {2024 - }} Research Assistant at Seoul National University
+% \end{twocolentry}
+
+
+% \vspace{0.2 cm}
+
+% \begin{twocolentry}{
+    
+    
+% \textit{NRF Korea}}
+%     \textbf{Robot learning systems with learning by asking based on long-horizon reinforcement learning}
+% \end{twocolentry}
+
+% \vspace{0.10 cm}
+% \begin{twocolentry}{
+%     {2024 - }} Research Assistant at Seoul National University
+% \end{twocolentry}
+
+
+% \vspace{0.2 cm}
+
+% \begin{twocolentry}{
+    
+    
+% \textit{NRF Korea}}
+%     \textbf{Robot learning systems with learning by asking based on long-horizon reinforcement learning}
+% \end{twocolentry}
+
+% \vspace{0.10 cm}
+% \begin{twocolentry}{
+%     {2024 - }} Research Assistant at Seoul National University
+% \end{twocolentry}
+
+
+% \vspace{0.2 cm}
+
+% \begin{twocolentry}{
+    
+    
+% \textit{NRF Korea}}
+%     \textbf{Robot learning systems with learning by asking based on long-horizon reinforcement learning}
+% \end{twocolentry}
+
+% \vspace{0.10 cm}
+% \begin{twocolentry}{
+%     {2024 - }} Research Assistant at Seoul National University
+% \end{twocolentry}
+
+
+% \vspace{0.2 cm}
+
+
+
+
+
+
+    \section{Invited Talks}
+
+        
+        \begin{samepage}
+            \begin{twocolentry}{
+                May 2019
+            }
+                \textbf{Naver}
+
+                \vspace{0.10 cm}
+
+                \mbox{Learning to learn unlearned feature for segmentation}
+                \vspace{0.10 cm}
+            \end{twocolentry}
+        \end{samepage}
+
+            \begin{samepage}
+            \begin{twocolentry}{
+                Jan. 2019
+            }
+                \textbf{Pusan National University}
+
+                \vspace{0.10 cm}
+
+                \mbox{Implementation of physical layer communication system by deep learning}
+                \vspace{0.10 cm}
+            \end{twocolentry}
+        \end{samepage}
+                \begin{samepage}
+            \begin{twocolentry}{
+                Jan. 2019
+            }
+                \textbf{Pusan National University}
+
+                \vspace{0.10 cm}
+
+                \mbox{Implementation of physical layer channel by autoencoder}
+                \vspace{0.10 cm}
+            \end{twocolentry}
+        \end{samepage}
+
+
+    \section{Guest Lectures}
+
+        
+        \begin{samepage}
+            \begin{twocolentry}{
+                Nov. 2019
+            }
+                \textbf{Samsung Electronics}
+
+                \vspace{0.10 cm}
+
+                \mbox{Introduction to Reinforcement Learning}
+                \vspace{0.10 cm}
+            \end{twocolentry}
+        \end{samepage}
+
+        \begin{samepage}
+            \begin{twocolentry}{
+                Feb. 2018
+            }
+                \textbf{Samsung Electronics}
+
+                \vspace{0.10 cm}
+
+                \mbox{Deep Learning based Face Recognition System}
+                \vspace{0.10 cm}
+            \end{twocolentry}
+        \end{samepage}
+
+
+    \section{Academic Activities}
+
+        \begin{onecolentry}
+        \textbf{Reviewer}
+            \begin{highlights}
+                \item NeurIPS (2022 - ), ICML (2023 - ), ICLR (2024 - ), AISTATS (2026 - )
+                \item NeurIPS Optimization for Machine Learning Workshop (2024 - )
+            \end{highlights}
+        \end{onecolentry}
+
+    
+    % \section{Technologies}
+
+
+
+        
+    %     \begin{onecolentry}
+    %         \textbf{Languages:} C++, C, Java, Objective-C, C\#, SQL, JavaScript
+    %     \end{onecolentry}
+
+    %     \vspace{0.2 cm}
+
+    %     \begin{onecolentry}
+    %         \textbf{Technologies:} .NET, Microsoft SQL Server, XCode, Interface Builder
+    %     \end{onecolentry}
+
+
+    
+
+\end{document}

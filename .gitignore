@@ -10,3 +10,6 @@ node_modules
 package.json
 tn/
 favicon.ico
+# CV: built from cv/main.tex (locally with latexmk, on deploy by GitHub Actions)
+cv/build/
+pdfs/cv_hsy.pdf

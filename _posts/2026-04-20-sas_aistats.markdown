@@ -8,7 +8,7 @@ author: "Seungyub Han"
 authors: "<strong>Seungyub Han*</strong>, Hyungjin Kim*, Jungwoo Lee (*equal contribution)"
 venue: "AISTATS 2026"
 paper: https://openreview.net/forum?id=GPNwYOQECX
-arxiv:
+arxiv: https://arxiv.org/abs/2604.26516
 slides:
 code: https://github.com/seungyubhan/sas
 ---

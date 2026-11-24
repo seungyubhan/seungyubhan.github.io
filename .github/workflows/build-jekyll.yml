@@ -4,12 +4,22 @@ on:
   push:
     branches:
       - main  # Here source code branch is `master`, it could be other branch
+  workflow_dispatch:
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      # Compile the CV from cv/main.tex (pdflatex + biber via latexmk)
+      - uses: xu-cheng/latex-action@v4
+        with:
+          root_file: main.tex
+          working_directory: cv
+
+      # Publish the compiled CV at /pdfs/cv_hsy.pdf
+      - run: cp cv/build/main.pdf pdfs/cv_hsy.pdf
 
       # Use GitHub Actions' cache to cache dependencies on servers
       - uses: actions/cache@v3
