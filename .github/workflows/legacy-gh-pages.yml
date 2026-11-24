@@ -1,9 +1,9 @@
-name: Build and Deploy to Github Pages
+# FALLBACK ONLY. This is the previous deploy method (build with
+# jekyll-deploy-action and push the result to the gh-pages branch).
+# It no longer runs on push. To go back to it, see "Rolling back" in README.md.
+name: Legacy deploy to gh-pages branch (fallback)
 
 on:
-  push:
-    branches:
-      - main  # Here source code branch is `master`, it could be other branch
   workflow_dispatch:
 
 jobs:

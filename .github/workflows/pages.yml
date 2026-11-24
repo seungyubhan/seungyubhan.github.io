@@ -1,0 +1,58 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - pages-actions  # test branch: builds only, never deploys
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deployment finish; queue at most one newer run behind it
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Compile the CV from cv/main.tex (pdflatex + biber via latexmk)
+      - uses: xu-cheng/latex-action@v4
+        with:
+          root_file: main.tex
+          working_directory: cv
+
+      # Publish the compiled CV at /pdfs/cv_hsy.pdf
+      - run: mkdir -p pdfs && cp cv/build/main.pdf pdfs/cv_hsy.pdf
+
+      # Ruby 3.2 matches what the previous deploy action used; gems are cached
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
