@@ -115,7 +115,7 @@ span.highlight {
   }
 
   td.stack-thumb img {
-    max-width: min(100%, 360px) !important;
+    max-width: unquote("min(100%, 360px)") !important;
   }
 
   td.stack-photo img {
