@@ -19,7 +19,7 @@ jobs:
           working_directory: cv
 
       # Publish the compiled CV at /pdfs/cv_hsy.pdf
-      - run: cp cv/build/main.pdf pdfs/cv_hsy.pdf
+      - run: mkdir -p pdfs && cp cv/build/main.pdf pdfs/cv_hsy.pdf
 
       # Use GitHub Actions' cache to cache dependencies on servers
       - uses: actions/cache@v3
