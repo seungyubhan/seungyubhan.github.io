@@ -34,7 +34,7 @@
       <td style="padding:0px">
         <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
           <tr style="padding:0px">
-            <td style="padding:2.5%;width:60%;vertical-align:middle">
+            <td class="stack" style="padding:2.5%;width:60%;vertical-align:middle">
               <h1>
                 Seungyub Han
               </h1>
@@ -53,7 +53,7 @@
                 <a href="/pdfs/cv_hsy.pdf"> CV </a>
               </p>
             </td>
-            <td style="padding:2.5%;width:40%;max-width:40%">
+            <td class="stack stack-photo" style="padding:2.5%;width:40%;max-width:40%">
               <img style="width:100%;max-width:100%" alt="profile photo" src="images/img_crop.jpg">
             </td>
           </tr>
@@ -76,10 +76,10 @@
           {% if cat == 'research' %}
           <tr>
             {% assign sep = "" %}
-            <td style="padding:2.5%;width:35%;vertical-align:middle;min-width:120px">
+            <td class="stack stack-thumb" style="padding:2.5%;width:35%;vertical-align:middle;min-width:120px">
               <img src="/{{post.image}}" alt="project image" style="width:auto; height:auto; max-width:100%;" />
             </td>
-            <td style="padding:2.5%;width:65%;vertical-align:middle">
+            <td class="stack" style="padding:2.5%;width:65%;vertical-align:middle">
               <h3>{{post.title}}</h3>
               <br>
               {{post.authors}}
@@ -133,10 +133,10 @@
           {% if cat == 'preprint' %}
           <tr>
             {% assign sep = "" %}
-            <td style="padding:2.5%;width:35%;vertical-align:middle;min-width:120px">
+            <td class="stack stack-thumb" style="padding:2.5%;width:35%;vertical-align:middle;min-width:120px">
               <img src="/{{post.image}}" alt="project image" style="width:auto; height:auto; max-width:100%;" />
             </td>
-            <td style="padding:2.5%;width:65%;vertical-align:middle">
+            <td class="stack" style="padding:2.5%;width:65%;vertical-align:middle">
               <h3>{{post.title}}</h3>
               <br>
               {{post.authors}}
@@ -205,10 +205,10 @@
           {% if cat != 'research' and cat != 'preprint' %}
           <tr>
             {% assign sep = "" %}
-            <td style="padding:2.5%;width:35%;vertical-align:middle;min-width:120px">
+            <td class="stack stack-thumb" style="padding:2.5%;width:35%;vertical-align:middle;min-width:120px">
               <img src="/{{post.image}}" alt="project image" style="width:auto; height:auto; max-width:100%;" />
             </td>
-            <td style="padding:2.5%;width:65%;vertical-align:middle">
+            <td class="stack" style="padding:2.5%;width:65%;vertical-align:middle">
               <h3>{{post.title}}</h3>
               <br>
               <em>{{post.categories}} {{post.course}}</em>

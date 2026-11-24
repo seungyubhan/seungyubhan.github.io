@@ -99,6 +99,31 @@ span.highlight {
   background-color: #ffffd0;
 }
 
+/* Narrow screens: stack the table cells (photo/bio, thumbnail/text) vertically */
+@media screen and (max-width: 600px) {
+  td.stack {
+    display: block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    padding: 2.5% 5% !important;
+  }
+
+  td.stack-thumb,
+  td.stack-photo {
+    text-align: center;
+  }
+
+  td.stack-thumb img {
+    max-width: min(100%, 360px) !important;
+  }
+
+  td.stack-photo img {
+    width: 60% !important;
+    max-width: 240px !important;
+  }
+}
+
 // Settled on moving the import of syntax highlighting to the bottom of the CSS
 // ... Otherwise it really bloats up the top of the CSS file and makes it difficult to find the start
 //@import "highlights";
